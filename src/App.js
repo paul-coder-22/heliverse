@@ -26,8 +26,8 @@ function App() {
 
   const fetchUserData = () => {
     setIsLoading(true)
-    fetch(`http://localhost:4000/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
-      // fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
+    // fetch(`http://localhost:4000/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
+    fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
       .then(response => response.json())
       .then(data => {
         setUsers(data.users)
@@ -83,8 +83,8 @@ function App() {
 
   /* Update User */
   const updateUser = (updatedUser) => {
-    // fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${updatedUser._id}`, {
-    fetch(`http://localhost:4000/api/users/${updatedUser._id}`, {
+    fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${updatedUser._id}`, {
+      // fetch(`http://localhost:4000/api/users/${updatedUser._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -139,8 +139,8 @@ function App() {
   /* Delete user */
   const deleteUser = async (index) => {
     try {
-      // await fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${index}`, {
-      await fetch(`http://localhost:4000/api/users/${index}`, {
+      await fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${index}`, {
+        // await fetch(`http://localhost:4000/api/users/${index}`, {
         method: 'DELETE',
       });
 
