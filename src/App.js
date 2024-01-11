@@ -16,6 +16,8 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null)
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false)
+
   const usersPerPage = 20;
 
   useEffect(() => {
@@ -23,14 +25,18 @@ function App() {
   }, [searchTerm, domainFilter, genderFilter, availabilityFilter]);
 
   const fetchUserData = () => {
-    // fetch(`http://localhost:4000/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
-    fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
+    setIsLoading(true)
+    fetch(`http://localhost:4000/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
+      // fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users?searchTerm=${searchTerm}&domain=${domainFilter}&gender=${genderFilter}&availability=${availabilityFilter}`)
       .then(response => response.json())
       .then(data => {
         setUsers(data.users)
         setTeamMembers(data.teams)
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => console.error('Error:', error))
+      .finally(() => {
+        setIsLoading(false)
+      })
   };
   const handlePageClick = (data) => {
     setCurrentPage(data.selected + 1);
@@ -41,9 +47,13 @@ function App() {
     const startIndex = (currentPage - 1) * usersPerPage;
     const endIndex = startIndex + usersPerPage;
 
+    if (isLoading) {
+      return userDataFecthingLoader
+    }
+
     return (
       <div className="user-grid">
-        {users.slice(startIndex, endIndex).map((user) => (
+        {users.length ? users.slice(startIndex, endIndex).map((user) => (
           <div className="user-card" key={user.id}>
             <div className="container" >
               <div className="shape">
@@ -65,7 +75,7 @@ function App() {
               <p>{user.available ? "Available" : "Not Available"}</p>
             </div>
           </div>
-        ))}
+        )) : <h3>No User Found</h3>}
       </div>
     );
   };
@@ -73,7 +83,8 @@ function App() {
 
   /* Update User */
   const updateUser = (updatedUser) => {
-    fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${updatedUser._id}`, {
+    // fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${updatedUser._id}`, {
+    fetch(`http://localhost:4000/api/users/${updatedUser._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -128,7 +139,8 @@ function App() {
   /* Delete user */
   const deleteUser = async (index) => {
     try {
-      await fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${index}`, {
+      // await fetch(`https://us-central1-firecrud-486cd.cloudfunctions.net/api/api/users/${index}`, {
+      await fetch(`http://localhost:4000/api/users/${index}`, {
         method: 'DELETE',
       });
 
@@ -226,7 +238,9 @@ function App() {
 
 
       <div id="userContainer" className="user-container">
-        {users.length ? displayUsers() : userDataFecthingLoader}
+        {/* {users.length ? displayUsers() : userDataFecthingLoader} */}
+        {displayUsers()}
+        {/* {users.length} */}
       </div>
       <div
         style={{
